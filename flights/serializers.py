@@ -11,7 +11,7 @@ class FlightSerializer(serializers.ModelSerializer):
 
 
 class BookingSerializer(serializers.ModelSerializer):
-	flights = serializers.SlugRelatedField(slug_field='destination', read_only=True)
+	flight = serializers.SlugRelatedField(slug_field='destination', read_only=True)
 	class Meta:
 		model = Booking
 		fields = ['flight', 'date', 'id']
@@ -24,8 +24,8 @@ class BookingDetailsSerializer(serializers.ModelSerializer):
 		model = Booking
 		fields = ['flight', 'date', 'passengers', 'id', 'total']
 
-		def get_total(self, obj):
-			return obj.number_of_travellers * obj.flight.price
+	def get_total(self, obj):
+		return obj.passengers * obj.flight.price
 
 
 class AdminUpdateBookingSerializer(serializers.ModelSerializer):
@@ -68,7 +68,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 	tier = serializers.SerializerMethodField()
 	class Meta:
 		model = Profile
-		fields = ['first_name', 'last_name', 'miles', 'past_bookings', 'tier',]
+		fields = ['user', 'miles', 'past_bookings', 'tier',]
 
 	def get_past_bookings(self, obj):
 		booking = Booking.objects.filter(user=obj.user, date__lt=date.today())
